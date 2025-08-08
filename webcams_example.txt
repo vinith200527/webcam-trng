@@ -1,0 +1,28 @@
+# Webcam URLs for entropy collection
+# Add one URL per line
+# Lines starting with # are ignored
+# 
+# IMPORTANT: Only use publicly accessible webcams
+# Respect rate limits and terms of service
+#
+# Supported formats:
+# - Direct JPEG/PNG snapshots
+# - MJPEG streams  
+# - HTML pages with embedded images
+#
+# Example sources (replace with your own):
+
+# Traffic cameras (example - find your local ones)
+# http://example-traffic-cam.gov/camera1.jpg
+
+# Weather stations
+# http://weather-station-example.org/current.jpg
+
+# Public landmarks
+# http://landmark-webcam.com/view.jpg
+
+# MJPEG streams
+# http://example.com/axis-cgi/mjpg/video.cgi
+
+# Note: The more diverse your sources, the better the entropy quality
+# Aim for 100+ working cameras from different locations/networks
