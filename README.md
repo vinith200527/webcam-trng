@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 1. **Start the API server:**
 ```bash
-python random_webcam_rng_v3.9.6.py
+python random_webcam_rng_v3.9.7.py
 ```
 The server will run on `http://localhost:8000`
 
@@ -65,7 +65,7 @@ Response:
 ### Generate NIST Test Data
 
 ```bash
-python random_webcam_rng_v3.9.6.py --generate-nist-file 10000000
+python random_webcam_rng_v3.9.7.py --generate-nist-file 10000000
 ```
 This generates a file with 10 million random bits for statistical testing.
 
@@ -184,7 +184,7 @@ The generator also passes the comprehensive **NIST Statistical Test Suite (STS)*
 
 ```
 webcam-trng/
-├── random_webcam_rng_v3.9.6.py  # Main TRNG implementation
+├── random_webcam_rng_v3.9.7.py  # Main TRNG implementation
 ├── check_webcams.py              # Webcam health verification tool
 ├── webcams.txt                   # List of webcam URLs
 ├── requirements.txt              # Python dependencies
@@ -404,3 +404,4 @@ Remember that even public webcams deserve respectful use:
 ---
 
 *⚡ Remember: True randomness is a precious resource. Use it wisely!*
+
