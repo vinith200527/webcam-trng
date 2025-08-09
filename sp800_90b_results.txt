@@ -1,0 +1,276 @@
+C:\AcertingAI\SP800_90b_tests>python sp800_90b_tests.py --verbose --csv nist_data.bin
+file, bits_per_symbol, symbol_count, min_min_entropy, mcv, collision, markov, compression, ttuple, lrs, multi_mcw, lag_prediction, multi_mmc_prediction, lz78y
+LEN bitlist =  1048576
+symbols =  1048576
+bitcount =  1048576
+TEST: mcv
+MCV Test
+  Symbol Length         1
+  Number of bits        1048576
+  Number of Symbols     1048576
+  Most common symbol    1
+  p_hat                 0.5002574920654297
+  pu                    0.5015153049984103
+  Symbol Min Entropy    0.9956343659175357
+  Min Entropy per bit   0.9956343659175357
+TEST: collision
+Collision Test
+   x_bar          2.499181298815207
+   sigma_hat      0.49999992558126904
+   x_bar_prime    2.4971928466994595
+   p = 0.5374643383802606
+   min_entropy = 0.8957590621364585
+TEST: markov
+MARKOV Test
+  Symbol Length         1
+  Number of bits        1048576
+    0.499976145812063 0.500023854187937
+    0.499510063710781 0.500489936289219
+     0 2.91947933380975e-39
+     1 2.76974546085942e-39
+     2 3.32315821538925e-39
+     3 2.91976348566926e-39
+     4 2.76975074594732e-39
+     5 3.32968349985022e-39
+  Min Entropy per bit   0.998592270710214
+TEST: compression
+COMPRESSION Test
+   Symbol Length        1
+   Number of bits       1048576
+   Number of blocks     174762
+   v                    173762
+   x_bar                5.217372323693057
+   sigma_hat            1.01529882272547
+   x_bar_prime          5.21109806620061
+   p_min                0.015625
+   p_max                1.0
+   p          = 0.029313836075289146
+   min_entropy = 0.848712402506237
+TEST: ttuple
+T-TUPLE Test
+   Symbol Length         1
+   Number of bits        1048576
+   Number of Symbols     1048576
+   t-threshold =  35
+   Testing t= 1   max tuple count:  524558
+   Testing t= 2   max tuple count:  262536
+   Testing t= 3   max tuple count:  131321
+   Testing t= 4   max tuple count:  65767
+   Testing t= 5   max tuple count:  33042
+   Testing t= 6   max tuple count:  16563
+   Testing t= 7   max tuple count:  8392
+   Testing t= 8   max tuple count:  4253
+   Testing t= 9   max tuple count:  2168
+   Testing t= 10   max tuple count:  1137
+   Testing t= 11   max tuple count:  594
+   Testing t= 12   max tuple count:  310
+   Testing t= 13   max tuple count:  169
+   Testing t= 14   max tuple count:  95
+   Testing t= 15   max tuple count:  56
+   Testing t= 16   max tuple count:  38
+   Testing t= 17   max tuple count:  23
+   Testing t= 18   max tuple count:  18
+   Testing t= 19   max tuple count:  13
+   Testing t= 20   max tuple count:  9
+   Testing t= 21   max tuple count:  8
+   Found t =  16
+   pu                    0.5290315441712388
+   Symbol Min Entropy    0.9185743474769199
+   Min Entropy per bit   0.9185743474769199
+TEST: lrs
+LRS Test
+   Symbol Length         1
+   Number of bits        1048576
+   Number of Symbols     1048576
+   t-threshold =  35
+   Testing u= 1   max tuple count:  524558
+   Testing u= 2   max tuple count:  262536
+   Testing u= 3   max tuple count:  131321
+   Testing u= 4   max tuple count:  65767
+   Testing u= 5   max tuple count:  33042
+   Testing u= 6   max tuple count:  16563
+   Testing u= 7   max tuple count:  8392
+   Testing u= 8   max tuple count:  4253
+   Testing u= 9   max tuple count:  2168
+   Testing u= 10   max tuple count:  1137
+   Testing u= 11   max tuple count:  594
+   Testing u= 12   max tuple count:  310
+   Testing u= 13   max tuple count:  169
+   Testing u= 14   max tuple count:  95
+   Testing u= 15   max tuple count:  56
+   Testing u= 16   max tuple count:  38
+   Testing u= 17   max tuple count:  23
+    u : 17
+   DICT SIZE: 131025
+   Testing v= 1   max tuple count:  524558
+   Testing v= 2   max tuple count:  262536
+   Testing v= 3   max tuple count:  131321
+   Testing v= 4   max tuple count:  65767
+   Testing v= 5   max tuple count:  33042
+   Testing v= 6   max tuple count:  16563
+   Testing v= 7   max tuple count:  8392
+   Testing v= 8   max tuple count:  4253
+   Testing v= 9   max tuple count:  2168
+   Testing v= 10   max tuple count:  1137
+   Testing v= 11   max tuple count:  594
+   Testing v= 12   max tuple count:  310
+   Testing v= 13   max tuple count:  169
+   Testing v= 14   max tuple count:  95
+   Testing v= 15   max tuple count:  56
+   Testing v= 16   max tuple count:  38
+   Testing v= 17   max tuple count:  23
+   Testing v= 18   max tuple count:  18
+   Testing v= 19   max tuple count:  13
+   Testing v= 20   max tuple count:  9
+   Testing v= 21   max tuple count:  8
+   Testing v= 22   max tuple count:  5
+   Testing v= 23   max tuple count:  5
+   Testing v= 24   max tuple count:  4
+   Testing v= 25   max tuple count:  3
+   Testing v= 26   max tuple count:  3
+   Testing v= 27   max tuple count:  3
+   Testing v= 28   max tuple count:  3
+   Testing v= 29   max tuple count:  3
+   Testing v= 30   max tuple count:  3
+   Testing v= 31   max tuple count:  3
+   Testing v= 32   max tuple count:  2
+   Testing v= 33   max tuple count:  2
+   Testing v= 34   max tuple count:  2
+   Testing v= 35   max tuple count:  2
+   Testing v= 36   max tuple count:  2
+   Testing v= 37   max tuple count:  2
+   Testing v= 38   max tuple count:  2
+   Testing v= 39   max tuple count:  2
+   Testing v= 40   max tuple count:  1
+   DICT SIZE: 1048537
+    v : 39
+   p_hat                 0.500940615432188
+   pu                    0.5021984263062393
+   Symbol Min Entropy    0.9936705871137551
+   Min Entropy per bit   0.9936705871137551
+TEST: multi_mcw
+MULTI MCW Test (Optimized)
+   Symbol Length            1
+   Number of bits           1048576
+   Number of Symbols        1048576
+   N                        1048513
+   Processing predictions...
+   Progress: 5.0%
+   Progress: 10.0%
+   Progress: 15.0%
+   Progress: 20.0%
+   Progress: 25.0%
+   Progress: 30.0%
+   Progress: 35.0%
+   Progress: 40.0%
+   Progress: 45.0%
+   Progress: 50.0%
+   Progress: 55.0%
+   Progress: 60.0%
+   Progress: 65.0%
+   Progress: 70.0%
+   Progress: 75.0%
+   Progress: 80.0%
+   Progress: 85.0%
+   Progress: 90.0%
+   Progress: 95.0%
+   Progress: 100.0%
+   P_global                 0.5000519783731818
+   P_prime_global           0.5013098292535335
+   C                        524311
+   r                        18
+   P_local                  0.36778774857521057
+   Min Entropy per symbol   0.9962255733617456
+   Min Entropy per bit      0.9962255733617456
+TEST: lag_prediction
+LAG PREDICTION Test
+   Symbol Length            1
+   Number of bits           1048576
+   Number of Symbols        1048576
+   N                        1048575
+   P_global                 0.5005965238538016
+   P_prime_global           0.5018543366581838
+    C                     524913
+    r                     18
+   P_local                  0.3677864968776703
+   Min Entropy per symbol   0.9946594125353176
+   Min Entropy per bit      0.9946594125353176
+TEST: multi_mmc_prediction
+MULTI MMC PREDICTION Test (Optimized)
+    Symbol Length         1
+    Number of bits        1048576
+    Number of Symbols     1048576
+    D                     16
+    L                     1048576
+    N                     1048574
+    Processing predictions...
+    Progress: 5.0%
+    Progress: 10.0%
+    Progress: 15.0%
+    Progress: 20.0%
+    Progress: 25.0%
+    Progress: 30.0%
+    Progress: 35.0%
+    Progress: 40.0%
+    Progress: 45.0%
+    Progress: 50.0%
+    Progress: 55.0%
+    Progress: 60.0%
+    Progress: 65.0%
+    Progress: 70.0%
+    Progress: 75.0%
+    Progress: 80.0%
+    Progress: 85.0%
+    Progress: 90.0%
+    Progress: 95.0%
+    Progress: 100.0%
+    STEP 5
+    STEP 6
+    p_global              0.5005435953971775
+    p_prime_global        0.5018014089531383
+    C                     524857
+    r                     20
+    STEP 7
+    p_local               0.4078085720539093
+    STEP 8
+    pu                    0.5018014089531383
+    Symbol Min Entropy    0.9948115733494203
+    Min Entropy per bit   0.9948115733494203
+TEST: lz78y
+LZ78Y Test
+    Symbol Length         1
+    Number of bits        1048576
+    Number of Symbols     1048576
+    B                     16
+    N                     1048559
+     i    Add to D             prev           Max D[prev]      prediction   Si   Correct_i-b-1
+    p_global              0.4992594598873311
+    p_prime_global        0.5005172818037809
+    C                     523503
+    r                     19
+    p_local               0.38834264874458313
+    pu                    0.5005172818037809
+    Symbol Min Entropy    0.9985082117558114
+    Min Entropy per bit   0.9985082117558114
+nist_data.bin,1,1048576,0.848712402506237,0.9956343659175357,0.8957590621364585,0.998592270710214,0.848712402506237,0.9185743474769199,0.9936705871137551,0.9962255733617456,0.9946594125353176,0.9948115733494203,0.9985082117558114
+
+SUMMARY
+-------
+File             nist_data.bin
+Bits per symbol  1
+Symbol Count     1048576
+
+NAME                                     T                  MIN ENTROPY
+----                                     -                  -----------
+mcv                                      None               0.9956343659175357
+collision                                None               0.8957590621364585
+markov                                   None               0.998592270710214
+compression                              None               0.848712402506237
+ttuple                                   None               0.9185743474769199
+lrs                                      None               0.9936705871137551
+multi_mcw                                None               0.9962255733617456
+lag_prediction                           None               0.9946594125353176
+multi_mmc_prediction                     None               0.9948115733494203
+lz78y                                    None               0.9985082117558114
+Minimum Min Entropy =  0.848712402506237
+COMPLETE
